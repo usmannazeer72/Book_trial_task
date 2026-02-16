@@ -42,10 +42,7 @@ ENV/
 logs/
 
 # Output Files
-output/
-*.docx
-*.pdf
-*.txt
+
 
 # Input Files (optional - remove if you want to commit sample files)
 input/*.xlsx

@@ -1,0 +1,24 @@
+# Core Dependencies
+pymongo>=4.6.0
+groq>=0.4.0
+python-dotenv>=1.0.0
+
+# Input Processing
+openpyxl>=3.1.0
+
+# Document Generation
+python-docx>=1.1.0
+reportlab>=4.0.0
+pypdf>=3.17.0
+
+# Notifications
+requests>=2.31.0
+
+# Utilities
+pydantic>=2.6.0
+pyyaml>=6.0.0
+
+# Development
+pytest>=7.4.0
+black>=23.12.0
+flake8>=7.0.0

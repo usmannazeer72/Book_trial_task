@@ -1,6 +1,6 @@
 # Automated Book Generation System
 
-A modular, scalable system for automated book generation using AI (Gemini API), with human-in-the-loop review at every stage.
+A modular, scalable system for automated book generation using AI (Groq API), with human-in-the-loop review at every stage.
 
 ## 🏗️ Architecture Overview
 
@@ -17,11 +17,11 @@ Chapter Generation (with context chaining) → Compilation → PDF/DOCX/TXT Outp
 | -------------------- | ------------------------------------------- |
 | **Backend**          | Python 3.11+                                |
 | **Database**         | MongoDB                                     |
-| **LLM API**          | Google Gemini API                           |
-| **Input**            | Google Sheets API / Excel (pandas)          |
+| **LLM API**          | Groq API                                    |
+| **Input**            | Excel (openpyxl)                            |
 | **Output**           | .docx (python-docx), .pdf (ReportLab), .txt |
-| **Notifications**    | SMTP Email, MS Teams Webhooks               |
-| **Containerization** | Docker, Docker Compose                      |
+| **Notifications**    | SMTP Email                                  |
+| **Containerization** | Local (no containers provided)              |
 
 ## 📋 Features
 
@@ -63,7 +63,7 @@ Each chapter is generated with awareness of previous chapters:
 Automated notifications via:
 
 - **Email (SMTP)** - Outline ready, chapter ready, book completed, errors
-- **MS Teams Webhooks** - Real-time updates to team channels
+- **MS Teams Webhooks** - (removed) use Email (SMTP) for notifications
 
 ### 5. **Modular Design**
 
@@ -85,8 +85,8 @@ Book_trial_task/
 │   ├── services/
 │   │   ├── __init__.py
 │   │   ├── ingestion_service.py     # Excel/Sheets ingestion
-│   │   ├── llm_service.py           # Gemini API integration
-│   │   ├── notification_service.py  # Email/Teams notifications
+│   │   ├── llm_service.py           # Groq API integration
+│   │   ├── notification_service.py  # Email notifications (SMTP)
 │   │   ├── outline_generator.py     # Outline generation with gating
 │   │   ├── chapter_generator.py     # Chapter generation with context
 │   │   └── compilation_service.py   # Final document compilation
@@ -98,8 +98,7 @@ Book_trial_task/
 ├── main.py                          # CLI entry point
 ├── create_sample_input.py           # Create sample Excel file
 ├── requirements.txt                 # Python dependencies
-├── Dockerfile                       # Docker configuration
-├── docker-compose.yml               # Docker Compose setup
+├── scripts/                          # helper scripts (docs fetch, etc.)
 ├── .env.example                     # Environment variables template
 ├── .gitignore
 ├── ARCHITECTURE.md                  # Detailed architecture documentation
@@ -145,14 +144,28 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Edit `.env` and add your credentials:
+Edit `.env` and add your credentials (example keys used by this project):
 
 ```env
-GEMINI_API_KEY=your_gemini_api_key
+GROQ_API_KEY=your_groq_api_key
+GROQ_MODEL=llama-3.3-70b-versatile  # optional
 MONGODB_URI=mongodb://localhost:27017/
-SMTP_USERNAME=your_email@gmail.com
-SMTP_PASSWORD=your_app_password
-# ... etc
+MONGODB_DATABASE=book_generation
+
+# SMTP (email notifications)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASSWORD=your_app_password_or_app_password
+FROM_EMAIL=your_email@gmail.com
+FROM_NAME=Book Generation
+SMTP_TO_EMAIL=editor@example.com
+
+# Optional behavior flags
+AUTO_APPROVE_OUTLINES=false
+AUTO_GENERATE_CHAPTERS=false
+AUTO_APPROVE_CHAPTERS=false
+MAX_CHAPTERS_PER_BOOK=3
 ```
 
 5. **Start MongoDB** (if running locally)
@@ -209,11 +222,7 @@ python main.py init
 python main.py run --input-source excel --excel-path input/books_input.xlsx
 ```
 
-**Run complete workflow (Google Sheets):**
-
-```bash
-python main.py run --input-source sheets
-```
+Note: Google Sheets ingestion has been removed. Use `--input-source excel` and provide an Excel file at `input/books_input.xlsx`.
 
 **Process single book:**
 
@@ -460,7 +469,7 @@ For production deployment:
 - Check MongoDB is running: `mongod`
 - Verify connection string in `.env`
 
-**Issue: Gemini API errors**
+**Issue: Groq API errors**
 
 - Verify API key is correct
 - Check API quota/rate limits
@@ -468,9 +477,9 @@ For production deployment:
 
 **Issue: Email notifications not working**
 
-- Use app-specific password for Gmail
-- Enable "Less secure app access" (or use OAuth2)
-- Check SMTP settings in `.env`
+- Use an app-specific password for Gmail (recommended)
+- Ensure SMTP credentials in `.env` are correct
+- Check SMTP settings and network connectivity
 
 **Issue: Chapters don't maintain context**
 
@@ -487,6 +496,7 @@ Created as part of the Book Generation System trial task.
 
 ## 🙏 Acknowledgments
 
-- Google Gemini API for LLM capabilities
+-- Groq API for LLM capabilities
+
 - MongoDB for flexible data storage
 - Python ecosystem for robust libraries

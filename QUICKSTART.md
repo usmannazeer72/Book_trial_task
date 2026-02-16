@@ -4,7 +4,7 @@
 
 - Python 3.11+
 - MongoDB installed locally or MongoDB Atlas account
-- Google Gemini API key ([Get it here](https://makersuite.google.com/app/apikey))
+  -- Groq API key (set `GROQ_API_KEY` in your `.env`)
 
 ## 5-Minute Setup
 
@@ -26,7 +26,8 @@ cp .env.example .env
 Edit `.env` file with minimum required values:
 
 ```env
-GEMINI_API_KEY=your_actual_gemini_api_key_here
+GROQ_API_KEY=your_actual_groq_api_key_here
+GROQ_MODEL=chat-bison-001
 MONGODB_URI=mongodb://localhost:27017/
 MONGODB_DATABASE=book_generation
 ```
@@ -176,10 +177,10 @@ mongod --version
 docker ps | grep mongo
 ```
 
-**Gemini API Error:**
+**Groq API Error:**
 
-- Verify API key is correct in `.env`
-- Check quota at [Google AI Studio](https://makersuite.google.com/)
+- Verify `GROQ_API_KEY` is correct in `.env`
+- Check quota and model availability on your Groq dashboard
 
 **No Books Ingested:**
 
